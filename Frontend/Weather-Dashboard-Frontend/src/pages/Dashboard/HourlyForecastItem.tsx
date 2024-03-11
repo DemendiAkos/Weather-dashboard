@@ -1,9 +1,7 @@
-import React from 'react'
+import React from "react";
 
 function HourlyForecastItem() {
-    return (
-        <div>HourlyForecastItem</div>
-    )
+  return <div>HourlyForecastItem</div>;
 }
 
-export default HourlyForecastItem
+export default HourlyForecastItem;
