@@ -1,6 +1,8 @@
 import React from "react";
 
-function DailyForecast() {
+interface Props {}
+
+function DailyForecast(props: Props) {
   return <div>DailyForecast</div>;
 }
 

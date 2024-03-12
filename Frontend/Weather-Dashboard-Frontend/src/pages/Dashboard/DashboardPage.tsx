@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { ForecastDataInterface } from "../../constans/forecastData";
+import HourlyForecastContainer from "./HourlyForecastContainer";
 
 function DashboardPage() {
   const API_KEY = import.meta.env.VITE_API_KEY;
   const limit = 24 / 3;
-  const cityname = "Budapest";
-  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=${API_KEY}&units=metric`;
-  const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityname}&appid=${API_KEY}&units=metric&cnt=${limit}`;
+  const cityName = "Debrecen";
+  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`;
+  const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric&cnt=${limit}`;
 
   const [forecastData, setForecastData] = useState<ForecastDataInterface>();
 
@@ -21,15 +22,14 @@ function DashboardPage() {
     FetchForecastData();
   }, [forecastUrl]);
 
-  let icon = forecastData?.list[0].weather[0].icon;
-  let desc = forecastData?.list[0].weather[0].description;
-  let temp = forecastData?.list[0].main.feels_like;
+  if (!forecastData || !forecastData.list || forecastData.list.length === 0) {
+    return <div>No forecast data available</div>;
+  }
 
   return (
-    <div>
-      <img src={`https://openweathermap.org/img/wn/${icon}@2x.png`} alt="asd" />
-      <p>{desc}</p>
-      <p>{temp}°C</p>
+    <div className="flex justify-center items-center h-screen flex-col">
+      <div className="text-6xl mb-10">{cityName}</div>
+      <HourlyForecastContainer forecastData={forecastData} />
     </div>
   );
 }
