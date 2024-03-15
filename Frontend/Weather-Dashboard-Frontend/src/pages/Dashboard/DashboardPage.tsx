@@ -19,7 +19,7 @@ function DashboardPage() {
       const res = await fetch(forecastUrl);
       const data = await res.json();
       setForecastData(data);
-      const temps = data.list.map((item) =>
+      const temps = data.list.map((item: { main: { feels_like: number; }; }) =>
         Math.round(item.main.feels_like as number)
       );
       console.log(temps);
