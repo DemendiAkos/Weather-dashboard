@@ -1,5 +1,5 @@
 import React from "react";
-import { List } from "../../constans/forecastData";
+import { List } from "../../constants/forecastData";
 
 interface Props {
   item: List;
@@ -8,8 +8,7 @@ interface Props {
 function HourlyForecastItem(props: Props) {
   return (
     <>
-      <div>
-        <p>{Math.round(props.item.main.feels_like as number)}°C</p>
+      <div className="p-3">
         <img
           src={`https://openweathermap.org/img/wn/${props.item.weather[0].icon}@2x.png`}
           alt={props.item.weather[0].description}

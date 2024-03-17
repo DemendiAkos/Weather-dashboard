@@ -21,15 +21,18 @@ function LineChart(props: Props) {
         {
           label: "My Dataset",
           data: props.temps,
-          borderColor: "rgb(255, 99, 132)",
-          borderWidth: 2,
+          borderColor: "#EC6E4C",
+          borderWidth: 3,
           fill: false,
-          tension: 0.4,
+          tension: 0.6,
+          // pointRadius: 0,
+          // pointHoverRadius: 0,
         },
       ],
     };
 
     const options: ChartConfiguration["options"] = {
+      aspectRatio: 10,
       scales: {
         y: {
           display: false,
