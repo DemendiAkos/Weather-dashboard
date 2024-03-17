@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { ForecastDataInterface } from "../../constants/forecastData";
+import { CurrentDataInterface } from "../../constants/currentData";
 import HourlyForecastContainer from "./HourlyForecastContainer";
+import DailyForecast from "./DailyForecastContainer";
 
 function DashboardPage() {
   const API_KEY = import.meta.env.VITE_API_KEY;
   const limit = 24 / 3;
-  const cityName = "Montana"; // Karakószörcsök
-  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`;
-  const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric&cnt=${limit}`;
+  const cityName = "Budapest"; // Karakószörcsök
+  const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for current weather
+  const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric&cnt=${limit}`; // api call for 5 day weather forecast
+
 
   const [forecastData, setForecastData] = useState<ForecastDataInterface>();
+  const [currentData, setCurrentData] = useState<CurrentDataInterface>(); 
   const [forecastTemperatures, setForecastTemperatures] = useState<number[]>(
     []
   );
@@ -30,17 +34,39 @@ function DashboardPage() {
     FetchForecastData();
   }, [forecastUrl]);
 
+
+  // fetching the data for the current weather usestate  
+  useEffect(() => {
+    async function FetchCurrentData() {
+        const res = await fetch(weatherUrl);
+        const data = await res.json();
+        setCurrentData(data);
+    }
+    FetchCurrentData();
+  }, [weatherUrl]);
+
   if (!forecastData || !forecastData.list || forecastData.list.length === 0) {
     return <div>No forecast data available</div>;
+  }
+
+  // checking if it sucks
+  if (!currentData) {
+    return <div>No current weather data available ¯\_(ツ)_/¯</div>;
   }
 
   return (
     <div className="flex justify-center items-center h-screen flex-col text-xl font-bold">
       <div className="text-6xl mb-10">{cityName}</div>
+
+      <DailyForecast
+      currentweather={currentData}
+      />
+
       <HourlyForecastContainer
         forecastData={forecastData}
         temps={forecastTemperatures}
       />
+      
     </div>
   );
 }
