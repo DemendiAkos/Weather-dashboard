@@ -7,7 +7,7 @@ import DailyForecast from "./DailyForecastContainer";
 function DashboardPage() {
   const API_KEY = import.meta.env.VITE_API_KEY;
   const limit = 24 / 3;
-  const cityName = "Budapest"; // Karakószörcsök
+  const cityName = "Karakószörcsök"; // Karakószörcsök
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for current weather
   const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric&cnt=${limit}`; // api call for 5 day weather forecast
 
@@ -56,17 +56,17 @@ function DashboardPage() {
 
   return (
     <div className="flex justify-center items-center h-screen flex-col text-xl font-bold">
-      <div className="text-6xl mb-10">{cityName}</div>
-
+      
       <DailyForecast
       currentweather={currentData}
+      city={forecastData.city.name}
       />
 
       <HourlyForecastContainer
         forecastData={forecastData}
         temps={forecastTemperatures}
       />
-      
+
     </div>
   );
 }
