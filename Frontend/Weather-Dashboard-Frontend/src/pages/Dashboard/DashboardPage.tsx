@@ -3,11 +3,12 @@ import { ForecastDataInterface } from "../../constants/forecastData";
 import { CurrentDataInterface } from "../../constants/currentData";
 import HourlyForecastContainer from "./HourlyForecastContainer";
 import DailyForecast from "./DailyForecastContainer";
+import SearchBar from "./SearchBar";
 
 function DashboardPage() {
   const API_KEY = import.meta.env.VITE_API_KEY;
   const limit = 24 / 3;
-  const cityName = "Karakószörcsök"; // Karakószörcsök
+  const cityName = "Bence"; // Karakószörcsök
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for current weather
   const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric&cnt=${limit}`; // api call for 5 day weather forecast
 
@@ -57,6 +58,8 @@ function DashboardPage() {
   return (
     <div className="flex justify-center items-center h-screen flex-col text-xl font-bold">
       
+      <SearchBar/>
+
       <DailyForecast
       currentweather={currentData}
       city={forecastData.city.name}
