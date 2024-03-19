@@ -44,8 +44,8 @@ function DashboardPage() {
         const data = await res.json();
         setForecastData(data);
         setError(""); 
-        const temps = data.list.map((item: { main: { feels_like: number; }; }) =>
-        Math.round(item.main.feels_like as number)
+        const temps = data.list.map((item: { main: { temp: number; }; }) =>
+        Math.round(item.main.temp as number)
       );
         setForecastTemperatures(temps);
       } catch (error) {
