@@ -21,7 +21,7 @@ function LineChart(props: Props) {
         {
           label: "My Dataset",
           data: props.temps,
-          borderColor: "#EC6E4C",
+          borderColor: "#121063",
           borderWidth: 3,
           fill: false,
           tension: 0.6,

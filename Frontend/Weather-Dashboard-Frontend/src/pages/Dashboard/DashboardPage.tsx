@@ -3,7 +3,6 @@ import { ForecastDataInterface } from "../../constants/forecastData";
 import { CurrentDataInterface } from "../../constants/currentData";
 import HourlyForecastContainer from "./HourlyForecastContainer";
 import DailyForecast from "./DailyForecastContainer";
-import SearchBar from "./SearchBar";
 
 function DashboardPage() {
   const [error, setError] = useState("");
@@ -20,6 +19,24 @@ function DashboardPage() {
     []
   );
 
+  useEffect(() => {
+    async function FetchForecastData() {
+      const res = await fetch(forecastUrl);
+      const data = await res.json();
+      setForecastData(data);
+      const temps = data.list.map((item: { main: { feels_like: number; }; }) =>
+        Math.round(item.main.feels_like as number)
+      );
+      console.log(temps);
+      setForecastTemperatures(temps);
+      console.log(data);
+      console.log(data.list[0].main.feels_like);
+    }
+    FetchForecastData();
+  }, [forecastUrl]);
+
+
+  // fetching the data for the current weather usestate  
   useEffect(() => {
     async function FetchCurrentData() {
       try {
