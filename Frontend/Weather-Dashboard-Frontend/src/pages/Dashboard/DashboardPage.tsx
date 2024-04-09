@@ -3,6 +3,7 @@ import { ForecastDataInterface } from "../../constants/forecastData";
 import { CurrentDataInterface } from "../../constants/currentData";
 import HourlyForecastContainer from "./HourlyForecastContainer";
 import DailyForecast from "./DailyForecastContainer";
+import ForecastContainer from "./ForecastContainer";
 
 function DashboardPage() {
   const API_KEY = import.meta.env.VITE_API_KEY;
@@ -22,6 +23,7 @@ function DashboardPage() {
     async function FetchForecastData() {
       const res = await fetch(forecastUrl);
       const data = await res.json();
+
       setForecastData(data);
       const temps = data.list.map((item: { main: { feels_like: number; }; }) =>
         Math.round(item.main.feels_like as number)

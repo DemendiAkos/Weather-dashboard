@@ -6,6 +6,23 @@ export interface ForecastDataInterface {
   city: City;
 }
 
+// export function buildForecastData({
+//   cod = "dummy",
+//   message = 200,
+//   cnt = 40,
+//   list = ,
+//   city = ""
+// } : Partial<ForecastDataInterface> = {}
+// ) : ForecastDataInterface
+// {
+//   return {
+//     cod,
+//     message,
+//     cnt
+//   }
+// }
+
+
 export interface List {
   dt: number;
   main: Main;
