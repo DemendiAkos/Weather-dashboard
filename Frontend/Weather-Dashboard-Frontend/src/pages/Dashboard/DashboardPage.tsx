@@ -3,18 +3,21 @@ import { ForecastDataInterface } from "../../constants/forecastData";
 import { CurrentDataInterface } from "../../constants/currentData";
 import HourlyForecastContainer from "./HourlyForecastContainer";
 import DailyForecast from "./DailyForecastContainer";
+import SearchBar from "./SearchBar";
+import { useNavigate } from 'react-router-dom';
 
 function DashboardPage() {
+  let navigate = useNavigate();
   const [error, setError] = useState("");
   const API_KEY = import.meta.env.VITE_API_KEY;
-  const limit = 24/3;
+  const limit = 24 / 3;
   const [cityName, setCityName] = useState("Bence");  // Karakószörcsök
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for current weather
   const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric&cnt=${limit}`; // api call for 5 day weather forecast
 
- 
+
   const [forecastData, setForecastData] = useState<ForecastDataInterface>();
-  const [currentData, setCurrentData] = useState<CurrentDataInterface>(); 
+  const [currentData, setCurrentData] = useState<CurrentDataInterface>();
   const [forecastTemperatures, setForecastTemperatures] = useState<number[]>(
     []
   );
@@ -44,7 +47,7 @@ function DashboardPage() {
         if (!res.ok) throw new Error('Failed to fetch weather data.');
         const data = await res.json();
         setCurrentData(data);
-        setError(""); 
+        setError("");
       } catch (error) {
         console.error(error);
         setError("The specified city doesn't exist or can't be reached. Please try another city.");
@@ -52,7 +55,7 @@ function DashboardPage() {
     }
     FetchCurrentData();
   }, [weatherUrl]);
-  
+
   useEffect(() => {
     async function FetchForecastData() {
       try {
@@ -60,10 +63,10 @@ function DashboardPage() {
         if (!res.ok) throw new Error('Failed to fetch forecast data.');
         const data = await res.json();
         setForecastData(data);
-        setError(""); 
+        setError("");
         const temps = data.list.map((item: { main: { temp: number; }; }) =>
-        Math.round(item.main.temp as number)
-      );
+          Math.round(item.main.temp as number)
+        );
         setForecastTemperatures(temps);
       } catch (error) {
         console.error(error);
@@ -72,7 +75,7 @@ function DashboardPage() {
     }
     FetchForecastData();
   }, [forecastUrl]);
-  
+
   if (!forecastData || !forecastData.list || forecastData.list.length === 0) {
     return <div>No forecast data available</div>;
   }
@@ -89,22 +92,32 @@ function DashboardPage() {
 
   return (
     <div className="flex justify-center items-center h-screen flex-col text-xl font-bold">
-      <SearchBar onCityChange={handleCityChange} 
+      <SearchBar onCityChange={handleCityChange}
       />
-      {error && <div className="text-sm text-red-500">{error}</div>} 
-      
+      {error && <div className="text-sm text-red-500">{error}</div>}
+
       <DailyForecast
-      currentweather={currentData}
-      city={forecastData.city.name}
+        currentweather={currentData}
+        city={forecastData.city.name}
       />
 
       <HourlyForecastContainer
         forecastData={forecastData}
         temps={forecastTemperatures}
       />
+      <button className="
+    absolute bottom-4 right-4 border-solid border-2 border-gray-600 rounded-full
+    bg-blue-500 hover:bg-blue-700 text-black 
+    font-bold py-2 px-4 rounded 
+    focus:outline-none focus:shadow-outline
+    transition duration-300 ease-in-out
+    transform hover:-translate-y-1 hover:scale-110
+  " onClick={() => navigate('/forecast', { state: { cityName } })}>Go to 5 day forecast</button>
+
+
     </div>
   );
-  
+
 }
 
 export default DashboardPage;
