@@ -13,7 +13,7 @@ interface Props {
 
 function ForecastPage() {
   const API_KEY = import.meta.env.VITE_API_KEY;
-  const cityName = "Aszód"
+  const cityName = "Budapest"
   const dailyForecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for 5 day weather forecast
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for current weather
   
