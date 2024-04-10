@@ -4,14 +4,29 @@ import { CurrentDataInterface } from "../../constants/currentData";
 import HourlyForecastContainer from "./HourlyForecastContainer";
 import DailyForecast from "./DailyForecastContainer";
 import SearchBar from "./SearchBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from 'react-router-dom';
+
+
 
 function DashboardPage() {
+
+  
   let navigate = useNavigate();
   const [error, setError] = useState("");
   const API_KEY = import.meta.env.VITE_API_KEY;
   const limit = 24 / 3;
   const [cityName, setCityName] = useState("Bence"); // Karakószörcsök
+  
+  let location = useLocation();
+  let state = location.state as { cityName?: string } | null;
+  
+  // When the component mounts or when the location state changes
+  useEffect(() => {
+    if (state?.cityName) {
+      setCityName(state.cityName);
+    }
+  }, [state]);
+  
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for current weather
   const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric&cnt=${limit}`; // api call for 5 day weather forecast
 
@@ -20,6 +35,7 @@ function DashboardPage() {
   const [forecastTemperatures, setForecastTemperatures] = useState<number[]>(
     []
   );
+
 
   useEffect(() => {
     async function FetchForecastData() {
@@ -115,7 +131,8 @@ function DashboardPage() {
     transition duration-300 ease-in-out
     transform hover:-translate-y-1 hover:scale-110
   "
-        onClick={() => navigate("/forecast", { state: { cityName } })}
+        onClick={() => navigate(`/forecast/${cityName}`, { state: { cityName } })}
+
       >
         Go to 5 day forecast
       </button>

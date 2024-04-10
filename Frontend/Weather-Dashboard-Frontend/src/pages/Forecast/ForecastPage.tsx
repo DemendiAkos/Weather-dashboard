@@ -5,8 +5,8 @@ import { ForecastDataInterface, List, Weather } from "../../constants/forecastDa
 import ForecastContainer from "./ForecastContainer";
 import DailyForecast from "../Dashboard/DailyForecastContainer";
 import { CurrentDataInterface } from "../../constants/currentData";
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+
 
 interface Props {
   forecastData: ForecastDataInterface;
@@ -17,7 +17,9 @@ interface Props {
 function ForecastPage() {
   let navigate = useNavigate();
   let location = useLocation();
-  let { cityName } = location.state || { cityName: "Bence" };
+
+  let params = useParams();
+  let cityName = params.cityName || "Bence";
   const API_KEY = import.meta.env.VITE_API_KEY;
 
 
@@ -106,7 +108,8 @@ function ForecastPage() {
     focus:outline-none focus:shadow-outline
     transition duration-300 ease-in-out
     transform hover:-translate-y-1 hover:scale-110
-  " onClick={() => navigate('/dashboard')}>Back to current forecast</button>
+  " onClick={() => navigate(`/dashboard`, { state: { cityName } })}
+  >Back to current forecast</button>
 
     </div>
 
