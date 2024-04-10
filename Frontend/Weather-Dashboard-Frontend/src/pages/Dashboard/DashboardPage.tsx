@@ -4,17 +4,16 @@ import { CurrentDataInterface } from "../../constants/currentData";
 import HourlyForecastContainer from "./HourlyForecastContainer";
 import DailyForecast from "./DailyForecastContainer";
 import SearchBar from "./SearchBar";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function DashboardPage() {
   let navigate = useNavigate();
   const [error, setError] = useState("");
   const API_KEY = import.meta.env.VITE_API_KEY;
   const limit = 24 / 3;
-  const [cityName, setCityName] = useState("Bence");  // Karakószörcsök
+  const [cityName, setCityName] = useState("Bence"); // Karakószörcsök
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for current weather
   const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric&cnt=${limit}`; // api call for 5 day weather forecast
-
 
   const [forecastData, setForecastData] = useState<ForecastDataInterface>();
   const [currentData, setCurrentData] = useState<CurrentDataInterface>();
@@ -27,7 +26,7 @@ function DashboardPage() {
       const res = await fetch(forecastUrl);
       const data = await res.json();
       setForecastData(data);
-      const temps = data.list.map((item: { main: { feels_like: number; }; }) =>
+      const temps = data.list.map((item: { main: { feels_like: number } }) =>
         Math.round(item.main.feels_like as number)
       );
       console.log(temps);
@@ -38,19 +37,20 @@ function DashboardPage() {
     FetchForecastData();
   }, [forecastUrl]);
 
-
-  // fetching the data for the current weather usestate  
+  // fetching the data for the current weather usestate
   useEffect(() => {
     async function FetchCurrentData() {
       try {
         const res = await fetch(weatherUrl);
-        if (!res.ok) throw new Error('Failed to fetch weather data.');
+        if (!res.ok) throw new Error("Failed to fetch weather data.");
         const data = await res.json();
         setCurrentData(data);
         setError("");
       } catch (error) {
         console.error(error);
-        setError("The specified city doesn't exist or can't be reached. Please try another city.");
+        setError(
+          "The specified city doesn't exist or can't be reached. Please try another city."
+        );
       }
     }
     FetchCurrentData();
@@ -60,17 +60,19 @@ function DashboardPage() {
     async function FetchForecastData() {
       try {
         const res = await fetch(forecastUrl);
-        if (!res.ok) throw new Error('Failed to fetch forecast data.');
+        if (!res.ok) throw new Error("Failed to fetch forecast data.");
         const data = await res.json();
         setForecastData(data);
         setError("");
-        const temps = data.list.map((item: { main: { temp: number; }; }) =>
+        const temps = data.list.map((item: { main: { temp: number } }) =>
           Math.round(item.main.temp as number)
         );
         setForecastTemperatures(temps);
       } catch (error) {
         console.error(error);
-        setError("The specified city doesn't exist or can't be reached. Please try another city.");
+        setError(
+          "The specified city doesn't exist or can't be reached. Please try another city."
+        );
       }
     }
     FetchForecastData();
@@ -92,8 +94,7 @@ function DashboardPage() {
 
   return (
     <div className="flex justify-center items-center h-screen flex-col text-xl font-bold">
-      <SearchBar onCityChange={handleCityChange}
-      />
+      <SearchBar onCityChange={handleCityChange} />
       {error && <div className="text-sm text-red-500">{error}</div>}
 
       <DailyForecast
@@ -105,19 +106,21 @@ function DashboardPage() {
         forecastData={forecastData}
         temps={forecastTemperatures}
       />
-      <button className="
+      <button
+        className="
     absolute bottom-4 right-4 border-solid border-2 border-gray-600 rounded-full
     bg-blue-500 hover:bg-blue-700 text-black 
     font-bold py-2 px-4 rounded 
     focus:outline-none focus:shadow-outline
     transition duration-300 ease-in-out
     transform hover:-translate-y-1 hover:scale-110
-  " onClick={() => navigate('/forecast', { state: { cityName } })}>Go to 5 day forecast</button>
-
-
+  "
+        onClick={() => navigate("/forecast", { state: { cityName } })}
+      >
+        Go to 5 day forecast
+      </button>
     </div>
   );
-
 }
 
 export default DashboardPage;

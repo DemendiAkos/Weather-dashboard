@@ -1,6 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Navigate,
+} from "react-router-dom";
 import App from "./App.tsx";
 import "./assets/index.css";
 import DashboardPage from "./pages/Dashboard/DashboardPage.tsx";
@@ -11,6 +15,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
+      {
+        path: "/",
+        element: <Navigate to="/dashboard" replace />,
+      },
       {
         path: "/dashboard",
         element: <DashboardPage />,
