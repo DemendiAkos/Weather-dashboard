@@ -1,11 +1,13 @@
 import React, { useRef, useState, useEffect } from "react";
-import { ForecastDataInterface } from "../../constants/forecastData";
+import { ForecastDataInterface, Weather } from "../../constants/forecastData";
 import LineChart from "../../components/LineChart";
 import ForecastItemTop from "./ForecastItemTop";
 
 interface Props{
   forecastData: ForecastDataInterface;
   temps: number[];
+  minTempList: number[];
+  minIconList: Weather[]
 }
 
 function ForecastContainer(props: Props) {
@@ -32,12 +34,12 @@ function ForecastContainer(props: Props) {
 
   return (
     <div className="container flex flex-col bg-white rounded-xl text-center items-center text-gray-800 p-6 shadow-md overflow-x-auto">
-      <div className="flex absolute justify-between mb-4 transform -translate-y-40" style={{ width: divHeight * 2, height: ""}} ref={divRef}>
+      <div className="flex absolute justify-between mb-4 transform -translate-y-40" style={{ width: divHeight * 1.5, height: ""}} ref={divRef}>
         {props.forecastData.list.map((item, index) => (
-          <ForecastItemTop key={index} item={item}/>
+          <ForecastItemTop key={index} item={item} minTemp ={props.minTempList[index]} minIcon = {props.minIconList[index].icon}/>
         ))}
       </div>
-      <div className="  p-2  pr-12   pt-4" style={{ width: divWidth*1.12, height: divHeight  }}>
+      <div className="pr-10 pt-4" style={{ width: divWidth*1.14, height: divHeight  }}>
         <LineChart temps={props.temps} />
       </div>
       {/* <div className="flex justify-between  z-10" style={{width: divHeight*3.5}} ref={divRef}>

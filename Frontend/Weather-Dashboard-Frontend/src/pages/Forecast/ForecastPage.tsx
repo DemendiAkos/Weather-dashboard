@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { ForecastDataInterface, List } from "../../constants/forecastData";
+
+import React , {useEffect, useState} from "react";
+import { ForecastDataInterface, List, Weather } from "../../constants/forecastData";
+        
 import ForecastContainer from "./ForecastContainer";
 import DailyForecast from "../Dashboard/DailyForecastContainer";
 import { CurrentDataInterface } from "../../constants/currentData";
@@ -18,14 +20,18 @@ function ForecastPage() {
   let { cityName } = location.state || { cityName: "Bence" };
   const API_KEY = import.meta.env.VITE_API_KEY;
 
+  const cityName = "Budapest"
+
   const dailyForecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for 5 day weather forecast
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for current weather
 
   const [dailyForecastData, setDailyForecastData] = useState<ForecastDataInterface>();
-  const [currentData, setCurrentData] = useState<CurrentDataInterface>();
-  const [forecastTemperatures, setForecastTemperatures] = useState<number[]>(
-    []
-  );
+
+  const [currentData, setCurrentData] = useState<CurrentDataInterface>(); 
+  const [forecastTemperatures, setForecastTemperatures] = useState<number[]>([]);
+  const [dailyForecastMinTemp, setDailyForecastMinTemp] = useState<number[]>([]);
+  const [dailyForecastMinIcon, setDailyForecastMinIcon] = useState<Weather[]>([]);
+
   // fetching the data for the current weather usestate  
   useEffect(() => {
     async function FetchCurrentData() {
@@ -42,13 +48,20 @@ function ForecastPage() {
       const res = await fetch(dailyForecastUrl);
       const data = await res.json();
       console.log(data)
-      let date = new Date("");
-      const list = data.list
+
+      const list = data.list 
       data.list = [];
-      list.forEach((element: List) => {
-        if (date.getDay() != new Date(element.dt_txt).getDay()) {
-          date = new Date(element.dt_txt)
+      const minTempList :number[] = []
+      const minIconList: Weather[] = []
+      list.forEach((element : List) => {
+        const currentData = new Date(element.dt_txt)
+        if(currentData.getHours() == 15){
+
           data.list.push(element)
+        }
+        if( currentData.getHours() == 3){
+          minTempList.push(element.main.temp)
+          minIconList.push(element.weather[0])
         }
       });
       data.list.shift()
@@ -57,6 +70,8 @@ function ForecastPage() {
       );
       setDailyForecastData(data);
       setForecastTemperatures(temps);
+      setDailyForecastMinTemp(minTempList)
+      setDailyForecastMinIcon(minIconList)
     }
     FetchDailyForecastData();
   }, [dailyForecastUrl])
@@ -78,8 +93,12 @@ function ForecastPage() {
       />
 
       <ForecastContainer
-        forecastData={dailyForecastData}
-        temps={forecastTemperatures}
+
+        forecastData = {dailyForecastData}
+        temps = {forecastTemperatures}
+        minTempList={dailyForecastMinTemp}
+        minIconList={dailyForecastMinIcon}
+
       />
       <button className="
     absolute bottom-4 left-4 border-solid border-2 border-gray-600 rounded-full
