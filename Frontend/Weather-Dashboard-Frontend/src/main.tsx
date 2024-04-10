@@ -24,7 +24,7 @@ const router = createBrowserRouter([
         element: <DashboardPage />,
       },
       {
-        path: "/forecast",
+        path: "/forecast/:cityName", 
         element: <ForecastPage />,
       },
     ],

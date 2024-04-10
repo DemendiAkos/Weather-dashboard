@@ -8,8 +8,8 @@ import {
 import ForecastContainer from "./ForecastContainer";
 import DailyForecast from "../Dashboard/DailyForecastContainer";
 import { CurrentDataInterface } from "../../constants/currentData";
-import { useNavigate } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
 interface Props {
   forecastData: ForecastDataInterface;
@@ -19,7 +19,9 @@ interface Props {
 function ForecastPage() {
   let navigate = useNavigate();
   let location = useLocation();
-  let { cityName } = location.state || { cityName: "Bence" };
+
+  let params = useParams();
+  let cityName = params.cityName || "Bence";
   const API_KEY = import.meta.env.VITE_API_KEY;
 
   const dailyForecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for 5 day weather forecast
@@ -115,8 +117,9 @@ function ForecastPage() {
     focus:outline-none focus:shadow-outline
     transition duration-300 ease-in-out
     transform hover:-translate-y-1 hover:scale-110
+
   "
-        onClick={() => navigate("/dashboard")}
+        onClick={() => navigate(`/dashboard`, { state: { cityName } })}
       >
         Back to current forecast
       </button>
