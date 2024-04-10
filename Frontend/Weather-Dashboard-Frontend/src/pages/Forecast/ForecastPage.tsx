@@ -1,18 +1,20 @@
+import React, { useEffect, useState } from "react";
+import {
+  ForecastDataInterface,
+  List,
+  Weather,
+} from "../../constants/forecastData";
 
-import React , {useEffect, useState} from "react";
-import { ForecastDataInterface, List, Weather } from "../../constants/forecastData";
-        
 import ForecastContainer from "./ForecastContainer";
 import DailyForecast from "../Dashboard/DailyForecastContainer";
 import { CurrentDataInterface } from "../../constants/currentData";
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 interface Props {
   forecastData: ForecastDataInterface;
   temps: number[];
 }
-
 
 function ForecastPage() {
   let navigate = useNavigate();
@@ -20,18 +22,24 @@ function ForecastPage() {
   let { cityName } = location.state || { cityName: "Bence" };
   const API_KEY = import.meta.env.VITE_API_KEY;
 
-
   const dailyForecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for 5 day weather forecast
   const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`; // api call for current weather
 
-  const [dailyForecastData, setDailyForecastData] = useState<ForecastDataInterface>();
+  const [dailyForecastData, setDailyForecastData] =
+    useState<ForecastDataInterface>();
 
-  const [currentData, setCurrentData] = useState<CurrentDataInterface>(); 
-  const [forecastTemperatures, setForecastTemperatures] = useState<number[]>([]);
-  const [dailyForecastMinTemp, setDailyForecastMinTemp] = useState<number[]>([]);
-  const [dailyForecastMinIcon, setDailyForecastMinIcon] = useState<Weather[]>([]);
+  const [currentData, setCurrentData] = useState<CurrentDataInterface>();
+  const [forecastTemperatures, setForecastTemperatures] = useState<number[]>(
+    []
+  );
+  const [dailyForecastMinTemp, setDailyForecastMinTemp] = useState<number[]>(
+    []
+  );
+  const [dailyForecastMinIcon, setDailyForecastMinIcon] = useState<Weather[]>(
+    []
+  );
 
-  // fetching the data for the current weather usestate  
+  // fetching the data for the current weather usestate
   useEffect(() => {
     async function FetchCurrentData() {
       const res = await fetch(weatherUrl);
@@ -41,41 +49,43 @@ function ForecastPage() {
     FetchCurrentData();
   }, [weatherUrl]);
 
-
   useEffect(() => {
     async function FetchDailyForecastData() {
       const res = await fetch(dailyForecastUrl);
       const data = await res.json();
-      console.log(data)
+      console.log(data);
 
-      const list = data.list 
+      const list = data.list;
       data.list = [];
-      const minTempList :number[] = []
-      const minIconList: Weather[] = []
-      list.forEach((element : List) => {
-        const currentData = new Date(element.dt_txt)
-        if(currentData.getHours() == 15){
-
-          data.list.push(element)
+      const minTempList: number[] = [];
+      const minIconList: Weather[] = [];
+      list.forEach((element: List) => {
+        const currentData = new Date(element.dt_txt);
+        if (currentData.getHours() == 15) {
+          data.list.push(element);
         }
-        if( currentData.getHours() == 3){
-          minTempList.push(element.main.temp)
-          minIconList.push(element.weather[0])
+        if (currentData.getHours() == 3) {
+          minTempList.push(element.main.temp);
+          minIconList.push(element.weather[0]);
         }
       });
-      data.list.shift()
-      const temps = data.list.map((item: { main: { feels_like: number; }; }) =>
+      data.list.shift();
+      const temps = data.list.map((item: { main: { feels_like: number } }) =>
         Math.round(item.main.feels_like as number)
       );
       setDailyForecastData(data);
       setForecastTemperatures(temps);
-      setDailyForecastMinTemp(minTempList)
-      setDailyForecastMinIcon(minIconList)
+      setDailyForecastMinTemp(minTempList);
+      setDailyForecastMinIcon(minIconList);
     }
     FetchDailyForecastData();
-  }, [dailyForecastUrl])
+  }, [dailyForecastUrl]);
 
-  if (!dailyForecastData || !dailyForecastData.list || dailyForecastData.list.length === 0) {
+  if (
+    !dailyForecastData ||
+    !dailyForecastData.list ||
+    dailyForecastData.list.length === 0
+  ) {
     return <div>No forecast data available</div>;
   }
 
@@ -92,24 +102,25 @@ function ForecastPage() {
       />
 
       <ForecastContainer
-
-        forecastData = {dailyForecastData}
-        temps = {forecastTemperatures}
+        forecastData={dailyForecastData}
+        temps={forecastTemperatures}
         minTempList={dailyForecastMinTemp}
         minIconList={dailyForecastMinIcon}
-
       />
-      <button className="
+      <button
+        className="
     absolute bottom-4 left-4 border-solid border-2 border-gray-600 rounded-full
     bg-blue-500 hover:bg-blue-700 text-black
     font-bold py-2 px-4 rounded 
     focus:outline-none focus:shadow-outline
     transition duration-300 ease-in-out
     transform hover:-translate-y-1 hover:scale-110
-  " onClick={() => navigate('/dashboard')}>Back to current forecast</button>
-
+  "
+        onClick={() => navigate("/dashboard")}
+      >
+        Back to current forecast
+      </button>
     </div>
-
   );
 }
 

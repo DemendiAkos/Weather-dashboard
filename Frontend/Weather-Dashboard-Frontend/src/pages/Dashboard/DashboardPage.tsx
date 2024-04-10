@@ -5,6 +5,7 @@ import HourlyForecastContainer from "./HourlyForecastContainer";
 import DailyForecast from "./DailyForecastContainer";
 import SearchBar from "./SearchBar";
 import { useNavigate } from "react-router-dom";
+import NoDataMessage from "../../components/NoDataMessage";
 
 function DashboardPage() {
   let navigate = useNavigate();
@@ -79,7 +80,7 @@ function DashboardPage() {
   }, [forecastUrl]);
 
   if (!forecastData || !forecastData.list || forecastData.list.length === 0) {
-    return <div>No forecast data available</div>;
+    return <NoDataMessage setCityName={setCityName} />;
   }
 
   // checking if it sucks
